@@ -266,7 +266,7 @@
             </div>
         </div>
 
-        <!-- PASSO 3: PAGAMENTO PIX DIRETO NA TELA -->
+        <!-- PASSO 3: PAGAMENTO PIX NA TELA VIA PROXY -->
         <div id="step-pix">
             <h2 style="color: var(--success); text-align: center; font-weight: 800; font-size: 24px;">Horário Pré-Reservado!</h2>
             <p style="text-align: center; font-size: 16px; color: var(--text-main);">Excelente escolha, <strong><span id="nome-confirmacao"></span></strong>!</p>
@@ -517,9 +517,9 @@
         document.getElementById('step-vagas').style.display = 'none';
         document.getElementById('step-pix').style.display = 'block';
 
-        // CHAMADA DE TESTE PARA A API ELITEPAYBR
-        const clientId = "SEU_CLIENT_ID_AQUI";
-        const clientSecret = "SEU_CLIENT_SECRET_AQUI";
+        // CREDENCIAIS DE TESTE
+        const clientId = "Ep_3494f9fae8d92e2463294ac2e28e0266";
+        const clientSecret = "eps_9df1cdc2257b5749b385d796347dadfc06f648153c7d26790dc06b3a9cd281d0";
 
         const loadingDiv = document.getElementById('pix-loading');
         const containerDiv = document.getElementById('pix-container');
@@ -529,11 +529,14 @@
         containerDiv.style.display = 'none';
         erroDiv.style.display = 'none';
 
-        // Limpa o CPF para formato numérico (Exemplo de fallback caso precise)
         const docNumerico = "12345678900";
 
         try {
-            const response = await fetch('https://api.elitepaybr.com/api/v1/deposit', {
+            // PROXY CORS PARA LIBERAR A CHAMADA NO GITHUB PAGES
+            const targetUrl = 'https://api.elitepaybr.com/api/v1/deposit';
+            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(targetUrl);
+
+            const response = await fetch(proxyUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
