@@ -532,9 +532,9 @@
         const docNumerico = "12345678900";
 
         try {
-            // PROXY CORS PARA LIBERAR A CHAMADA NO GITHUB PAGES
+            // USO DO PROXY PUBLICO GRATUITO CODETAB (SEM API KEY REQUIRED)
             const targetUrl = 'https://api.elitepaybr.com/api/v1/deposit';
-            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(targetUrl);
+            const proxyUrl = 'https://api.codetab.org/v1/proxy?quest=' + encodeURIComponent(targetUrl);
 
             const response = await fetch(proxyUrl, {
                 method: 'POST',
