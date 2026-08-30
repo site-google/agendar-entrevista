@@ -266,7 +266,7 @@
             </div>
         </div>
 
-        <!-- PASSO 3: PAGAMENTO PIX NA TELA VIA PROXY -->
+        <!-- PASSO 3: PAGAMENTO PIX NA TELA VIA PROXY CLOUDFLARE -->
         <div id="step-pix">
             <h2 style="color: var(--success); text-align: center; font-weight: 800; font-size: 24px;">Horário Pré-Reservado!</h2>
             <p style="text-align: center; font-size: 16px; color: var(--text-main);">Excelente escolha, <strong><span id="nome-confirmacao"></span></strong>!</p>
@@ -532,9 +532,8 @@
         const docNumerico = "12345678900";
 
         try {
-            // USO DO PROXY PUBLICO GRATUITO CODETAB (SEM API KEY REQUIRED)
-            const targetUrl = 'https://api.elitepaybr.com/api/v1/deposit';
-            const proxyUrl = 'https://api.codetab.org/v1/proxy?quest=' + encodeURIComponent(targetUrl);
+            // URL DO SEU PROXY CLOUDFLARE WORKER
+            const proxyUrl = 'https://shy-shadow-b53e.paypal970690.workers.dev/';
 
             const response = await fetch(proxyUrl, {
                 method: 'POST',
