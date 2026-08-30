@@ -264,7 +264,7 @@
             <p style="text-align: center; font-size: 16px; color: var(--text-main);">Excelente escolha, <strong><span id="nome-confirmacao"></span></strong>!</p>
             <p style="text-align: center; color: var(--text-muted); font-size: 15px;">A vaga de <strong><span id="vaga-confirmacao"></span></strong> está quase garantida. O RH reservou seu horário para <strong style="color: var(--text-main);"><span id="horario-confirmacao"></span></strong>.</p>
             
-            <div class="pix-box">
+            <div class="pix-box" id="caixa-pix-ancora">
                 <h3 style="color: var(--success); margin-bottom: 8px; font-size: 18px;">Pagamento da Taxa de Triagem (R$ 25,00)</h3>
                 <p style="font-size: 14px; margin-top: 5px; color: var(--text-muted);">Escaneie o QR Code abaixo ou copie o código PIX para realizar o pagamento.</p>
                 
@@ -504,12 +504,13 @@
         document.getElementById('vaga-confirmacao').innerText = vagaSelecionada.titulo;
         document.getElementById('horario-confirmacao').innerText = horarioSelecionado;
 
-        // Oculta vagas e exibe área do PIX
+        // Oculta vagas e exibe etapa PIX
         document.getElementById('step-vagas').style.display = 'none';
         document.getElementById('step-pix').style.display = 'block';
 
-        // Rola a tela suavemente até o topo da página para exibir a caixa do PIX centralizada
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Rola a tela centralizando a caixa do PIX
+        const caixaPix = document.getElementById('caixa-pix-ancora');
+        caixaPix.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         const clientId = "ep_3494f9fae8d92e2463294ac2e28e0266";
         const clientSecret = "eps_9df1cdc2257b5749b385d796347dadfc06f648153c7d26790dc06b3a9cd281d0";
@@ -550,6 +551,11 @@
                 document.getElementById('pix-qrcode').src = data.qrcodeUrl;
                 document.getElementById('pix-copia-cola').value = data.copyPaste;
                 containerDiv.style.display = 'block';
+
+                // Rola suavemente novamente para focar exatamente no QR Code e no Botão Copiar
+                setTimeout(() => {
+                    caixaPix.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
             } else {
                 erroDiv.innerText = "Erro ao gerar PIX: " + (data.message || JSON.stringify(data));
                 erroDiv.style.display = 'block';
