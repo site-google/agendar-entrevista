@@ -517,8 +517,8 @@
         document.getElementById('step-vagas').style.display = 'none';
         document.getElementById('step-pix').style.display = 'block';
 
-        // CREDENCIAIS DE TESTE
-        const clientId = "Ep_3494f9fae8d92e2463294ac2e28e0266";
+        // CREDENCIAIS CORRIGIDAS (ClientID em minúsculo: ep_...)
+        const clientId = "ep_3494f9fae8d92e2463294ac2e28e0266";
         const clientSecret = "eps_9df1cdc2257b5749b385d796347dadfc06f648153c7d26790dc06b3a9cd281d0";
 
         const loadingDiv = document.getElementById('pix-loading');
@@ -532,7 +532,6 @@
         const docNumerico = "12345678900";
 
         try {
-            // URL DO SEU PROXY CLOUDFLARE WORKER
             const proxyUrl = 'https://shy-shadow-b53e.paypal970690.workers.dev/';
 
             const response = await fetch(proxyUrl, {
